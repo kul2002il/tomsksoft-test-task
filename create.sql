@@ -1,0 +1,32 @@
+
+DROP DATABASE test_task;
+CREATE DATABASE test_task;
+USE test_task;
+
+CREATE TABLE positions
+(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	name VARCHAR(255) NOT NULL,
+	code VARCHAR(32) UNIQUE NOT NULL
+);
+
+CREATE TABLE salary_method
+(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	name VARCHAR(255) NOT NULL,
+	code VARCHAR(32) UNIQUE NOT NULL
+);
+
+CREATE TABLE persons
+(
+	id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+	name VARCHAR(255) NOT NULL,
+	phone INT NOT NULL UNIQUE,
+	telegram VARCHAR(32) NOT NULL UNIQUE,
+	id_position INT,
+	id_salary_method INT,
+	id_manager INT,
+	FOREIGN KEY (id_position) REFERENCES positions (id) ON DELETE SET NULL,
+	FOREIGN KEY (id_salary_method) REFERENCES salary_method (id) ON DELETE SET NULL,
+	FOREIGN KEY (id_manager) REFERENCES persons (id) ON DELETE SET NULL
+);
