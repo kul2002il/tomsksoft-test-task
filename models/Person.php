@@ -1,32 +1,18 @@
 <?php
 namespace models;
 
-class Person extends \core\ActiveRecord implements PersonInterface
+class Person extends \core\ActiveRecord
 {
 
     /**
-     *
      * {@inheritdoc}
+     *
      * @see \core\ActiveRecord::tableName()
      */
     public static function tableName(): string
     {
         return "persons";
     }
-
-    public $name;
-
-    public $phone;
-
-    public $telegram;
-
-    public $id_position;
-
-    public $id_salary_method;
-
-    public $id_manager;
-
-    public SalaryCalc $salaryMethod;
 
     /**
      *
@@ -45,9 +31,27 @@ class Person extends \core\ActiveRecord implements PersonInterface
         ]);
     }
 
-    public function amI($className): bool
+    public $name;
+
+    public $phone;
+
+    public $telegram;
+
+    public $id_position;
+
+    public $id_salary_method;
+
+    public $id_manager;
+
+    public SalaryCalc $salaryMethod;
+
+    public function employees(): array
     {
-        return static::class === $className;
+        if($this->getId())
+        {
+            return Person::find("id_manager = {$this->getId()}");
+        }
+        return [];
     }
 
     public function salaryCalc(): float

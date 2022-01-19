@@ -5,7 +5,7 @@ class RegularSalary implements SalaryCalc
 {
 
     /**
-     * (non-PHPdoc)
+     * {@inheritdoc}
      *
      * @see \models\SalaryCalc::calc()
      */

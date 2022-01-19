@@ -3,9 +3,8 @@ namespace models;
 
 class HourlySalary implements SalaryCalc
 {
-
     /**
-     * (non-PHPdoc)
+     * {@inheritdoc}
      *
      * @see \models\SalaryCalc::calc()
      */
@@ -14,4 +13,3 @@ class HourlySalary implements SalaryCalc
         return 200;
     }
 }
-

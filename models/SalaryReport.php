@@ -1,33 +1,39 @@
 <?php
+
 namespace models;
 
 class SalaryReport
 {
+    /**
+     * Report all Person.
+     *
+     * @return array
+     */
 
     public function report(): array
     {
         $stuff = Person::find('id_manager IS NULL');
-        return array_map(function (PersonInterface $person) {
+        return array_map(function (Person $person) {
             return $this->reportCommand($person);
         }, $stuff);
     }
 
-    public function reportCommand(PersonInterface $person): array
+    /**
+     * Report command of $person.
+     *
+     * @param Person $person
+     * @return array
+     */
+    public function reportCommand(Person $person): array
     {
-        ManagerDecorator::tryBeFrom($person);
         $out = [
             'id' => $person->getId(),
             'name' => $person->name,
-            'salary' => $person->salaryCalc()
+            'salary' => $person->salaryCalc(),
+            'employees' => array_map(function (Person $person) {
+                return $this->reportCommand($person);
+            }, $person->employees())
         ];
-        if ($person->amI(ManagerDecorator::class)) {
-            $out += [
-                'employees' => array_map(function (PersonInterface $person) {
-                    return $this->reportCommand($person);
-                }, $person->employees)
-            ];
-        }
         return $out;
     }
 }
-

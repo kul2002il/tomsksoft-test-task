@@ -52,7 +52,7 @@ function renderReport(array $data)
     echo '<ol>';
     foreach ($data as $pin) {
         echo "<li>{$pin['name']} — {$pin['salary']} <a href=\"?edit_person={$pin['id']}\">Изменить</a>";
-        if (isset($pin['employees'])) {
+        if ($pin['employees']) {
             renderReport($pin['employees']);
         }
         echo "</li>";

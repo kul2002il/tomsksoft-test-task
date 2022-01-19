@@ -21,7 +21,7 @@ CREATE TABLE persons
 (
 	id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	name VARCHAR(255) NOT NULL,
-	phone INT NOT NULL UNIQUE,
+	phone BIGINT NOT NULL UNIQUE,
 	telegram VARCHAR(32) NOT NULL UNIQUE,
 	id_position INT,
 	id_salary_method INT,
