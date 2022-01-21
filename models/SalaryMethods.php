@@ -2,7 +2,7 @@
 
 namespace models;
 
-class Positions extends SelectorRecord
+class SalaryMethods extends SelectorRecord
 {
 
     /**
@@ -10,6 +10,6 @@ class Positions extends SelectorRecord
      */
     public static function tableName(): string
     {
-        return 'positions';
+        return 'salary_method';
     }
 }

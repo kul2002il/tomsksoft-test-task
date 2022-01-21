@@ -1,10 +1,10 @@
 INSERT INTO positions (name, code) VALUES
-("Сотрудник", "worker"),
+("Сотрудник", "employee"),
 ("Менеджер", "manager");
 
 INSERT INTO salary_method (name, code) VALUES
-("Окладная оплата", "RegularSalary"),
-("Почасовая оплата", "HourlySalary");
+("Окладная оплата", "Regular"),
+("Почасовая оплата", "Hourly");
 
 INSERT INTO persons (name, phone, telegram, id_position, id_salary_method, id_manager) VALUES
 ("Иванов Иван Иванович", 1231231234, "tm123123", 2, 1, NULL),

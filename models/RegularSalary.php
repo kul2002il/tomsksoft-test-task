@@ -1,13 +1,13 @@
 <?php
 namespace models;
 
-class RegularSalary implements SalaryCalc
+class RegularSalary implements SalaryCalculated
 {
 
     /**
      * {@inheritdoc}
      *
-     * @see \models\SalaryCalc::calc()
+     * @see \models\SalaryCalculated::calc()
      */
     public function salaryCalc():float
     {

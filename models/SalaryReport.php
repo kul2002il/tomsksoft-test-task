@@ -12,8 +12,9 @@ class SalaryReport
 
     public function report(): array
     {
-        $stuff = Person::find('id_manager IS NULL');
-        return array_map(function (Person $person) {
+        $peopleFactory = new PositionsSelector();
+        $stuff = $peopleFactory->factoryPeople('id_manager IS NULL');
+        return array_map(function (Reportable $person) {
             return $this->reportCommand($person);
         }, $stuff);
     }
@@ -21,18 +22,18 @@ class SalaryReport
     /**
      * Report command of $person.
      *
-     * @param Person $person
+     * @param Reportable $person
      * @return array
      */
-    public function reportCommand(Person $person): array
+    public function reportCommand(Reportable $person): array
     {
         $out = [
             'id' => $person->getId(),
-            'name' => $person->name,
-            'salary' => $person->salaryCalc(),
-            'employees' => array_map(function (Person $person) {
+            'name' => $person->getName(),
+            'salary' => $person->getSalary(),
+            'employees' => array_map(function (Reportable $person) {
                 return $this->reportCommand($person);
-            }, $person->employees())
+            }, $person->getStaff())
         ];
         return $out;
     }

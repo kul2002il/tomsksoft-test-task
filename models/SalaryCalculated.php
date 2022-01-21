@@ -1,7 +1,7 @@
 <?php
 namespace models;
 
-interface SalaryCalc
+interface SalaryCalculated
 {
     /**
      * Calculation salary

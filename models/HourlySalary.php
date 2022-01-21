@@ -1,12 +1,12 @@
 <?php
 namespace models;
 
-class HourlySalary implements SalaryCalc
+class HourlySalary implements SalaryCalculated
 {
     /**
      * {@inheritdoc}
      *
-     * @see \models\SalaryCalc::calc()
+     * @see \models\SalaryCalculated::calc()
      */
     public function salaryCalc():float
     {

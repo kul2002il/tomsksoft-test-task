@@ -1,7 +1,7 @@
 <?php
 namespace models;
 
-class Person extends \core\ActiveRecord
+class Person extends \core\ActiveRecord implements Reportable
 {
 
     /**
@@ -19,9 +19,9 @@ class Person extends \core\ActiveRecord
      * {@inheritdoc}
      * @see \core\ActiveRecord::fielsdDB()
      */
-    public static function fielsdDB(): array
+    public static function fieldsDB(): array
     {
-        return array_merge(parent::fielsdDB(), [
+        return array_merge(parent::fieldsDB(), [
             'name',
             'phone',
             'telegram',
@@ -43,22 +43,23 @@ class Person extends \core\ActiveRecord
 
     public $id_manager;
 
-    public SalaryCalc $salaryMethod;
+    public SalaryCalculated $salaryMethod;
 
-    public function employees(): array
+    public function getName(): string
     {
-        if($this->getId())
-        {
-            return Person::find("id_manager = {$this->getId()}");
-        }
-        return [];
+        return $this->name;
     }
 
-    public function salaryCalc(): float
+    public function getSalary(): float
     {
-        $method = SalaryMethodsStorage::findById($this->id_salary_method);
-        $this->salaryMethod = $method->getMethod();
-        return $this->salaryMethod->salaryCalc();
+        $selector = new SalaryMethodsSelector();
+        $method = $selector->id2class($this->id_salary_method);
+        return $method->salaryCalc();
+    }
+
+    public function getStaff(): array
+    {
+        return [];
     }
 }
 

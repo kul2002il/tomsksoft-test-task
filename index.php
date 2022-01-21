@@ -1,6 +1,6 @@
 <?php
 use models\Positions;
-use models\SalaryMethodsStorage;
+use models\SalaryMethods;
 use models\Person;
 use models\SalaryReport;
 
@@ -51,7 +51,7 @@ function renderReport(array $data)
 {
     echo '<ol>';
     foreach ($data as $pin) {
-        echo "<li>{$pin['name']} — {$pin['salary']} <a href=\"?edit_person={$pin['id']}\">Изменить</a>";
+        echo "<li>{$pin['name']} — {$pin['salary']} <a href=\"?edit_person={$pin['id']}\">Изменить</a>";
         if ($pin['employees']) {
             renderReport($pin['employees']);
         }
@@ -60,8 +60,9 @@ function renderReport(array $data)
     echo '</ol>';
 }
 
+// TODO: Вытащить данные.
 $positions = Positions::find();
-$salaryMethods = SalaryMethodsStorage::find();
+$salaryMethods = SalaryMethods::find();
 $stuff = Person::find();
 
 ?>

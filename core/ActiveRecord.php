@@ -25,7 +25,7 @@ abstract class ActiveRecord
      *
      * @return array
      */
-    public static function fielsdDB(): array
+    public static function fieldsDB(): array
     {
         return [
             'id'
@@ -51,7 +51,7 @@ abstract class ActiveRecord
      * @param string $condition
      * @return array
      */
-    public static final function find(string $condition = ''): array
+    public static function find(string $condition = ''): array
     {
         global $mysqli;
         $table = static::tableName();
@@ -62,7 +62,7 @@ abstract class ActiveRecord
         $allRecord = [];
         while ($row = $result->fetch_assoc()) {
             $record = new static();
-            foreach ($record->fielsdDB() as $field) {
+            foreach ($record->fieldsDB() as $field) {
                 $record->$field = $row[$field];
             }
             array_push($allRecord, $record);
@@ -91,7 +91,7 @@ abstract class ActiveRecord
         global $mysqli;
 
         $table = static::tableName();
-        $fields = static::fielsdDB();
+        $fields = static::fieldsDB();
         $shieldingData = [];
         foreach ($fields as $field) {
             if ($this->$field === null) {
