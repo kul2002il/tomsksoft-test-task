@@ -1,19 +1,19 @@
 <?php
 
-namespace models;
+namespace models\salaryReport;
 
-class SalaryReport
+use models\kernel\VendorDataForReport;
+use models\kernel\Reportable;
+
+class SalaryReport implements ReportRenderable
 {
-    /**
-     * Report all Person.
-     *
-     * @return array
-     */
+    public function __construct(
+        private VendorDataForReport $vendor
+    ) {}
 
     public function report(): array
     {
-        $peopleFactory = new PositionsSelector();
-        $stuff = $peopleFactory->factoryPeople('id_manager IS NULL');
+        $stuff = $this->vendor->getRootReport();
         return array_map(function (Reportable $person) {
             return $this->reportCommand($person);
         }, $stuff);
@@ -25,7 +25,7 @@ class SalaryReport
      * @param Reportable $person
      * @return array
      */
-    public function reportCommand(Reportable $person): array
+    private function reportCommand(Reportable $person): array
     {
         $out = [
             'id' => $person->getId(),

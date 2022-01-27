@@ -30,3 +30,16 @@ CREATE TABLE persons
 	FOREIGN KEY (id_salary_method) REFERENCES salary_method (id) ON DELETE SET NULL,
 	FOREIGN KEY (id_manager) REFERENCES persons (id) ON DELETE SET NULL
 );
+
+CREATE VIEW persons_with_codes AS
+    SELECT
+        persons.id,
+        persons.name,
+        persons.phone,
+        persons.telegram,
+        persons.id_manager,
+        positions.code AS position_code,
+        salary_method.code AS salary_method_code
+    FROM persons, salary_method, positions
+    WHERE persons.id_position = positions.id
+        AND persons.id_salary_method = salary_method.id;

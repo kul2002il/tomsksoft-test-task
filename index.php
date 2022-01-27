@@ -1,8 +1,4 @@
 <?php
-use models\Positions;
-use models\SalaryMethods;
-use models\Person;
-use models\SalaryReport;
 
 ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
@@ -12,9 +8,7 @@ spl_autoload_register(function ($class) {
     require_once './' . str_replace('\\', '/', $class) . '.php';
 });
 
-$mysqli = require_once 'config/connectDB.php';
-
-
+/*
 if(isset($_POST['savePerson']))
 {
     if(isset($_POST['editPerson']))
@@ -42,28 +36,16 @@ else
 {
     $editPerson = new Person();
 }
+*/
 
-
-$salaryReport = new SalaryReport();
-
-// print_r($salaryReport->report());
-function renderReport(array $data)
-{
-    echo '<ol>';
-    foreach ($data as $pin) {
-        echo "<li>{$pin['name']} — {$pin['salary']} <a href=\"?edit_person={$pin['id']}\">Изменить</a>";
-        if ($pin['employees']) {
-            renderReport($pin['employees']);
-        }
-        echo "</li>";
-    }
-    echo '</ol>';
-}
-
-// TODO: Вытащить данные.
-$positions = Positions::find();
-$salaryMethods = SalaryMethods::find();
-$stuff = Person::find();
+$storage = new models\personStorage\PersonStorageInPDO();
+$core = new models\kernel\CorePersons($storage);
+$core->regSalaryMethod(new models\salaryMethods\HourlySalary());
+$core->regSalaryMethod(new models\salaryMethods\RegularSalary());
+$core->regPersonFactory(new models\positions\manager\ManagerFactory());
+$core->regPersonFactory(new models\positions\employee\EmployeeFactory());
+$report = new models\salaryReport\SalaryReport($core);
+$htmlReport = new models\renderReport\HTMLRenderReport($report);
 
 ?>
 
@@ -77,11 +59,11 @@ $stuff = Person::find();
 	<h1>Система расчета ЗП</h1>
 	<h2>Отчёт</h2>
 	<pre>
-	<?php
-renderReport($salaryReport->report());
-?>
+	<?php $htmlReport->render(); ?>
 	</pre>
 	<h2>Создание сотрудника</h2>
+    Наелось и спит.
+    <?php /* ?>
 	<form method="post">
 		<?php if($editPerson->getId()): ?>
 		<input type="hidden" name="editPerson"
@@ -145,5 +127,7 @@ renderReport($salaryReport->report());
 		</ul>
 		<input type="submit" name="savePerson">
 	</form>
+
+    <?php */ ?>
 </body>
 </html>
