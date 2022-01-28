@@ -8,36 +8,6 @@ spl_autoload_register(function ($class) {
     require_once './' . str_replace('\\', '/', $class) . '.php';
 });
 
-/*
-if(isset($_POST['savePerson']))
-{
-    if(isset($_POST['editPerson']))
-    {
-        $editPerson = Person::findById((int)$_POST['editPerson']);
-    }
-    else
-    {
-        $editPerson = new Person();
-    }
-    $editPerson->name = $_POST['name'];
-    $editPerson->phone = $_POST['phone'];
-    $editPerson->telegram = $_POST['telegram'];
-    $editPerson->id_position = $_POST['position'];
-    $editPerson->id_salary_method = $_POST['salaryMethod'];
-    $editPerson->id_manager = $_POST['manager'];
-    $editPerson->save();
-}
-
-if(isset($_GET['edit_person']))
-{
-    $editPerson = Person::findById((int)$_GET['edit_person']);
-}
-else
-{
-    $editPerson = new Person();
-}
-*/
-
 $storage = new models\personStorage\PersonStorageInPDO();
 $core = new models\kernel\CorePersons($storage);
 $core->regSalaryMethod(new models\salaryMethods\HourlySalary());
@@ -46,6 +16,42 @@ $core->regPersonFactory(new models\positions\manager\ManagerFactory());
 $core->regPersonFactory(new models\positions\employee\EmployeeFactory());
 $report = new models\salaryReport\SalaryReport($core);
 $htmlReport = new models\renderReport\HTMLRenderReport($report);
+
+
+if(isset($_POST['savePerson']))
+{
+    if(isset($_POST['id']))
+    {
+        $editPerson = $core->findById((int)$_POST['id']);
+    }
+    else
+    {
+        $editPerson = new models\positions\employee\Employee();
+        $editPerson->setCore($core);
+        $editPerson->setSalaryMethod($core->getSalaryMethodByCode('Hourly'));
+    }
+    $editPerson->loadFromArray($_POST);
+    $core->savePerson($editPerson);
+}
+else if(isset($_GET['edit_person']))
+{
+    $editPerson = $core->findById((int)$_GET['edit_person']);
+}
+else
+{
+    $editPerson = new models\positions\employee\Employee();
+    $editPerson->setCore($core);
+    $editPerson->setSalaryMethod($core->getSalaryMethodByCode('Hourly'));
+}
+$editPersonData = $editPerson->exportToArray();
+
+$managers = $core->find('position_code="manager"');
+
+$positionsStorage = new models\personStorage\PositionsStorage();
+$salaryMethodsStorage = new models\personStorage\SalaryMethodsStorage();
+
+$positions = $positionsStorage->findAssoc();
+$salaryMethods = $salaryMethodsStorage->findAssoc();
 
 ?>
 
@@ -62,11 +68,9 @@ $htmlReport = new models\renderReport\HTMLRenderReport($report);
 	<?php $htmlReport->render(); ?>
 	</pre>
 	<h2>Создание сотрудника</h2>
-    Наелось и спит.
-    <?php /* ?>
 	<form method="post">
 		<?php if($editPerson->getId()): ?>
-		<input type="hidden" name="editPerson"
+		<input type="hidden" name="id"
 		value="<?=$editPerson->getId() ?>"/>
 		<?php endif; ?>
 		<ul>
@@ -74,52 +78,52 @@ $htmlReport = new models\renderReport\HTMLRenderReport($report);
 				<label for="name">ФИО полностью:</label>
 				<input type="text" name="name" id="name"
 					placeholder="Иванов Иван Иванович"
-					value="<?=$editPerson->name ?>">
+					value="<?=$editPersonData['name'] ?>">
 			</li>
 			<li>
 				<label for="phone">Номер телефона:</label>
 				+7<input type="text" name="phone" id="phone"
 					placeholder="9008007755" pattern="[0-9]{10}"
-					value="<?=$editPerson->phone ?>">
+					value="<?=$editPersonData['phone'] ?>">
 			</li>
 			<li>
 				<label for="telegram">Telegram:</label>
 				@<input type="text" name="telegram" id="telegram"
 					pattern="[a-z0-9_]{5-32}" placeholder="adsd_3g"
-					value="<?=$editPerson->telegram ?>">
+					value="<?=$editPersonData['telegram'] ?>">
 			</li>
 			<li>
 				<label for="position">Должность:</label>
 				<select name="position" id="position">
 				<?php foreach ($positions as $position): ?>
-					<option value="<?=$position->getId() ?>"
-					<?=$editPerson->id_position == $position->getId() ?
+					<option value="<?=$position['code'] ?>"
+					<?=$editPersonData['position_code'] == $position['code']?
 					'selected' : ''?>>
-						<?=$position->name ?>
+						<?=$position['name'] ?>
 					</option>
 				<?php endforeach; ?>
 				</select>
 			</li>
 			<li>
 				<label for="salaryMethod">Вид оплаты труда:</label>
-				<select name="salaryMethod" id="salaryMethod">
+				<select name="salary_method_code" id="salaryMethod">
 				<?php foreach ($salaryMethods as $salaryMethod): ?>
-					<option value="<?=$salaryMethod->getId() ?>"
-					<?=$editPerson->id_salary_method == $salaryMethod->getId() ?
+					<option value="<?=$salaryMethod['code'] ?>"
+					<?=$editPersonData['salary_method_code'] == $salaryMethod['code'] ?
 					'selected' : ''?>>
-						<?=$salaryMethod->name ?>
+						<?=$salaryMethod['name'] ?>
 					</option>
 				<?php endforeach; ?>
 				</select>
 			</li>
 			<li>
 				<label for="manager">В подчинении у</label>
-				<select name="manager" id="manager">
-				<?php foreach ($stuff as $manager): ?>
+				<select name="id_manager" id="manager">
+				<?php foreach ($managers as $manager): ?>
 					<option value="<?=$manager->getId() ?>"
-					<?=$editPerson->id_manager == $manager->getId() ?
+					<?=$editPersonData['id_manager'] == $manager->getId() ?
 					'selected' : ''?>>
-						<?=$manager->name ?>
+						<?=$manager->getName() ?>
 					</option>
 				<?php endforeach; ?>
 				</select>
@@ -127,7 +131,5 @@ $htmlReport = new models\renderReport\HTMLRenderReport($report);
 		</ul>
 		<input type="submit" name="savePerson">
 	</form>
-
-    <?php */ ?>
 </body>
 </html>

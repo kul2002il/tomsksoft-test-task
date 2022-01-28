@@ -7,10 +7,17 @@ use models\kernel\Person;
 class Manager extends Person
 {
     private array $staff = [];
+
+    public function __construct()
+    {
+        $this->myFactory = new ManagerFactory();
+    }
+
     public function getStaff(): array
     {
         return $this->staff;
     }
+
     public function loadFromArray(array $data)
     {
         parent::loadFromArray($data);

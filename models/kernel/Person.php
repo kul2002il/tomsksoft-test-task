@@ -2,8 +2,6 @@
 
 namespace models\kernel;
 
-use models\kernel\SalaryCalculable;
-
 class Person implements Reportable, PersonSavable
 {
     protected $id;
@@ -17,6 +15,9 @@ class Person implements Reportable, PersonSavable
     protected $id_manager;
 
     protected SalaryCalculable $salaryMethod;
+
+    protected PersonFactory $myFactory;
+
     protected CorePersons $corePersons;
 
     public function setCore(CorePersons $corePersons)
@@ -63,7 +64,7 @@ class Person implements Reportable, PersonSavable
 
     public function loadFromArray(array $data)
     {
-        $this->id = $data['id'];
+        $this->id = $data['id'] ?? null;
         $this->name = $data['name'];
         $this->phone = $data['phone'];
         $this->telegram = $data['telegram'];
@@ -80,6 +81,7 @@ class Person implements Reportable, PersonSavable
             'phone' => $this->phone,
             'telegram' => $this->telegram,
             'id_manager' => $this->id_manager,
+            'position_code' => $this->myFactory->getCode(),
             'salary_method_code' => $this->salaryMethod->getCode(),
         ];
     }
